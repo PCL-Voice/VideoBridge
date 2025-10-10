@@ -29,7 +29,7 @@ conda create -n <env_name> python >=3.13.7
 conda activate <env_name>
 
 # 2. 克隆项目仓库（请替换为实际仓库地址）
-git clone https://github.com/your-username/video-voice-translator.git
+git clone https://github.com/ZhenqiLi/video-voice-translator.git
 cd video-voice-translator
 
 # 3. 安装依赖包
@@ -42,29 +42,28 @@ pip install -r requirements.txt
 | **`F5tts.py`** | 文本-to-语音（TTS）合成 | F5-TTS模型 | 代码源自 [SWivid/F5-TTS](https://github.com/SWivid/F5-TTS.git) 开源项目 |
 | **`video_mt.py`** | 项目主入口，流程调度 | Whisper、GemmaX2等 | 串联所有模块，支持参数配置与命令行调用 |
 | **`requirements.txt`** | 依赖包清单 | - | 包含项目运行所需的全部Python库 |
-| **`config.ini.sample`** | 配置文件模板 | - | 可复制为`config.ini`保存常用参数（如模型路径） |
 
 ## ⚙️ 模型与参数配置
 `video_mt.py` 通过参数配置实现灵活的多语种处理，核心参数分为**模型路径**和**运行配置**两类，所有参数均可通过文件预设或命令行指定。
 
 ### 1. 📌 必配模型路径
 这些参数需指向本地已下载的模型文件，是功能生效的核心基础：
-| 参数名称 | 对应模型 | 功能说明 | 配置示例 |
+| 参数名称 | 对应模型 | 功能说明 | 注意事项 |
 | :--- | :--- | :--- | :--- |
-| `--whisper_model_path` | Whisper-large-v3 | 语音特征提取与识别，支持28种语种 | `/models/whisper-large-v3` |
-| `--llm_model_path` | GemmaX2-28-9B-v0.1 | 核心翻译引擎，处理多语种文本转换 | `/models/GemmaX2-28-9B-v0.1` |
-| `--ckpt_path` | LoRA微调参数 | 优化小语种翻译准确率的微调模型 | `/models/lora_mt_ckpt` |
-| `--tts_model_path` | F5TTS_v1_Base | 目标语种语音合成主模型 | `/models/F5TTS_v1_Base` |
-| `--vocoder_local_path` | vocos-mel-24khz | 声码器，提升合成语音清晰度 | `/models/vocos-mel-24khz` |
+| `--whisper_model_path` | Whisper-large-v3 | 语音特征提取与识别，支持28种语种 | 路径需根据您下载的模型位置进行修改 |
+| `--llm_model_path` | GemmaX2-28-9B-v0.1 | 核心翻译引擎，处理多语种文本转换 | 路径需根据您下载的模型位置进行修改 |
+| `--ckpt_path` | LoRA微调参数 | 优化小语种翻译准确率的微调模型 | 路径需根据您下载的模型位置进行修改|
+| `--tts_model_path` | F5TTS_v1_Base | 目标语种语音合成主模型 | 路径需根据您下载的模型位置进行修改|
+| `--vocoder_local_path` | vocos-mel-24khz | 声码器，提升合成语音清晰度 | 路径需根据您下载的模型位置进行修改 |
 
 ### 2. 🔧 运行参数配置
 | 参数名称 | 功能说明 | 格式/示例 |
 | :--- | :--- | :--- |
-| `--cache-dir` | 中间文件（音频、字幕）与成品的保存路径 | `/data/video_cache` |
-| `--video_name` | 待处理视频的文件名（含后缀） | `sample_video.mp4` |
-| `--video_file` | 待处理视频的完整路径 | `/data/input/sample_video.mp4` |
-| `--prompt` | 翻译方向标签，格式为`<源语种代码><目标语种代码>` | `<zho><eng>`（中译英）、`<eng><jpn>`（英译日） |
-| `--output_path` | 成品视频输出路径（当前版本可忽略，默认使用cache-dir） | `/data/output` |
+| `--cache-dir` | 中间文件（音频、字幕）与成品的保存路径 | `./examples` |
+| `--video_name` | 待处理视频的文件名（含后缀） | `xinwen_60` |
+| `--video_file` | 待处理视频的完整路径 | `xinwen_60.webm` |
+| `--prompt` | 翻译方向标签，格式为`<源语种代码><目标语种代码>` | `<|zho|><|eng|>`（中译英）、`<|eng|><|jpn|>`（英译日） |
+| `--output_path` | 成品视频输出路径（当前版本可忽略，默认使用cache-dir） | `./test_dir` |
 
 ## 🚀 快速运行指南
 提供两种运行方式，适配不同使用场景：
@@ -80,24 +79,13 @@ pip install -r requirements.txt
 通过命令行直接指定参数，无需修改代码，示例如下（中译英任务）：
 ```bash
 python video_mt.py \
-    --cache-dir /data/video_translation/cache \
-    --whisper_model_path /models/whisper-large-v3 \
-    --llm_model_path /models/GemmaX2-28-9B-v0.1 \
-    --ckpt_path /models/lora_mt_ckpt \
-    --tts_model_path /models/F5TTS_v1_Base \
-    --vocoder_local_path /models/vocos-mel-24khz \
-    --video_name chinese_demo.mp4 \
-    --video_file /data/videos/chinese_demo.mp4 \
-    --prompt <zho><eng>
+    --cache-dir 生成文件保存的路径  \
+    --whisper_model_path whisper-large-v3模型的路径 \
+    --llm_model_path GemmaX2-28-9B-v0.1模型的路径  \
+    --ckpt_path 语音翻译的lora微调参数的路径   \
+    --tts_model_path F5TTS_v1_Base 模型的路径  \
+    --vocoder_local_path vocos-mel-24khz模型的路径  
 ```
-
-## ❗ 常见问题与解决方案
-| 问题现象 | 可能原因 | 解决方法 |
-| :--- | :--- | :--- |
-| 模型加载失败 | 模型路径错误或文件不完整 | 1. 核对`--xxx_model_path`参数是否正确；2. 重新下载完整模型文件 |
-| 翻译语种不符 | `--prompt`参数格式错误 | 确保格式为`<源语种代码><目标语种代码>`，如`<eng><kor>`（英译韩） |
-| 合成语音卡顿 | 声码器路径错误或资源不足 | 1. 检查`--vocoder_local_path`配置；2. 关闭其他占用GPU的程序 |
-| 视频重组失败 | 中间文件缺失 | 检查`--cache-dir`权限，确保程序可读写该目录 |
 
 ## 🙏 致谢
 本项目的实现得益于开源社区的强大支持：
