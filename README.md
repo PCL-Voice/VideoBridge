@@ -62,7 +62,7 @@ pip install -r requirements.txt
 | `cache-dir` | 中间文件（音频、字幕）与成品（转换后）视频的保存路径 | `./examples` |
 | `video_name` | 待处理视频的文件名（含后缀） | `xinwen_60` |
 | `video_file` | 待处理视频的完整路径 | `xinwen_60.webm` |
-| `prompt` | 翻译方向标签 | `<|zho|><|eng|>`（中译英）、`<|eng|><|jpn|>`（英译日） |
+| `prompt` | 翻译方向标签 | `<\|zho\|\><\|eng\|>`（中译英）、`<\|eng\|><\|jpn\|>`（英译日） |
 
 ## 🚀 快速运行指南
 提供两种运行方式，适配不同使用场景：
